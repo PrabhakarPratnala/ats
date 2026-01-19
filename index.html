@@ -24,34 +24,38 @@
       /* Modern Input Field Styling */
       .input-field {
         width: 100%;
-        padding: 0.625rem 0.875rem;
-        background-color: #ffffff;
+        padding: 0.75rem 1rem;
+        background-color: #f8fafc; /* Slightly gray background by default */
         border: 1px solid #e2e8f0;
-        border-radius: 0.5rem;
+        border-radius: 0.75rem;
         font-size: 0.875rem;
         line-height: 1.25rem;
         color: #1e293b;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         outline: none;
+        font-weight: 500;
       }
       
       .input-field::placeholder {
         color: #94a3b8;
+        font-weight: 400;
       }
       
       .input-field:hover {
+        background-color: #ffffff;
         border-color: #cbd5e1;
       }
       
       .input-field:focus {
+        background-color: #ffffff;
         border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); /* Softer, wider glow */
       }
       
       .input-field:disabled {
         background-color: #f1f5f9;
         cursor: not-allowed;
-        color: #64748b;
+        color: #94a3b8;
       }
 
       /* Custom Scrollbar */
@@ -70,12 +74,11 @@
         background: #94a3b8;
       }
 
-      /* AI Gradient Animation */
-      .ai-gradient-text {
-        background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+      /* Background Pattern */
+      .bg-grid-pattern {
+        background-color: #f8fafc;
+        background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+        background-size: 24px 24px;
       }
 
       @media print {
@@ -94,13 +97,13 @@
   <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
     "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
     "vite": "https://esm.sh/vite@^7.3.1",
-    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
     "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }

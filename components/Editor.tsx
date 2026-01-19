@@ -163,49 +163,56 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
     }
   };
 
-  const SectionHeader = ({ id, icon: Icon, title, subtitle }: { id: string, icon: any, title: string, subtitle?: string }) => (
-    <button
-      onClick={() => setActiveSection(activeSection === id ? '' : id)}
-      className={`w-full flex items-center justify-between p-4 bg-white border-b border-gray-100 hover:bg-gray-50 transition-all duration-200 group`}
-    >
-      <div className="flex items-center gap-4">
-        <div className={`p-2 rounded-lg transition-colors ${activeSection === id ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'}`}>
-          <Icon size={18} />
+  const SectionHeader = ({ id, icon: Icon, title, subtitle }: { id: string, icon: any, title: string, subtitle?: string }) => {
+    const isActive = activeSection === id;
+    return (
+      <button
+        onClick={() => setActiveSection(isActive ? '' : id)}
+        className={`w-full flex items-center justify-between p-5 bg-white border-b border-gray-100 transition-all duration-300 group ${isActive ? 'bg-gray-50/50' : 'hover:bg-gray-50'}`}
+      >
+        <div className="flex items-center gap-4">
+          <div className={`p-2.5 rounded-xl transition-all duration-300 ${isActive ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200 group-hover:text-gray-700'}`}>
+            <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+          </div>
+          <div className="text-left">
+            <span className={`block font-bold text-base ${isActive ? 'text-gray-900' : 'text-gray-700'}`}>{title}</span>
+            {subtitle && <span className="text-xs text-gray-400 font-medium">{subtitle}</span>}
+          </div>
         </div>
-        <div className="text-left">
-          <span className={`block font-semibold ${activeSection === id ? 'text-gray-900' : 'text-gray-700'}`}>{title}</span>
-          {subtitle && <span className="text-xs text-gray-400 font-normal">{subtitle}</span>}
+        <div className={`transition-transform duration-300 ${isActive ? 'rotate-180' : ''}`}>
+           <ChevronDown size={18} className={isActive ? "text-indigo-600" : "text-gray-400"} />
         </div>
-      </div>
-      {activeSection === id ? <ChevronUp size={16} className="text-indigo-500" /> : <ChevronDown size={16} className="text-gray-400" />}
-    </button>
-  );
+      </button>
+    );
+  };
 
   return (
     <div className="bg-white h-full overflow-y-auto custom-scrollbar flex flex-col">
       
       {/* Import Section */}
-      <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+      <div className="p-6 border-b border-gray-100 bg-gradient-to-br from-indigo-50/80 to-purple-50/50">
         <div className="mb-4">
-            <h3 className="text-sm font-bold text-gray-900 mb-1">Already have a resume?</h3>
-            <p className="text-xs text-gray-600">Upload your PDF or Image to auto-fill details using AI.</p>
+            <h3 className="text-sm font-bold text-gray-900 mb-1 flex items-center gap-2">
+              <UploadCloud size={16} className="text-indigo-600"/>
+              Import Existing Resume
+            </h3>
+            <p className="text-xs text-gray-600 leading-relaxed">Upload a PDF or Image to automatically extract details using AI.</p>
         </div>
         
         <button 
           onClick={() => fileInputRef.current?.click()}
           disabled={genState.isGenerating}
-          className="w-full bg-white border-2 border-dashed border-indigo-200 text-indigo-700 py-4 rounded-xl hover:border-indigo-400 hover:bg-indigo-50/50 transition-all flex flex-col items-center justify-center gap-2 text-sm font-medium shadow-sm disabled:opacity-50 group"
+          className="w-full bg-white/80 border border-indigo-200 text-indigo-700 py-4 rounded-xl hover:border-indigo-400 hover:bg-white hover:shadow-md hover:shadow-indigo-100 transition-all flex flex-col items-center justify-center gap-2 text-sm font-semibold disabled:opacity-50 group active:scale-95"
         >
           {genState.isGenerating && genState.type === 'import' ? (
              <div className="flex flex-col items-center gap-2">
                <Loader2 size={24} className="animate-spin text-indigo-600" />
-               <span className="text-xs text-indigo-500">Analyzing document...</span>
+               <span className="text-xs text-indigo-500 font-medium">Analyzing document...</span>
              </div>
           ) : (
-             <>
-               <UploadCloud size={24} className="text-indigo-400 group-hover:text-indigo-600 transition-colors" />
-               <span>Click to Upload Resume</span>
-             </>
+             <span className="flex items-center gap-2">
+               Click to Select File
+             </span>
           )}
         </button>
         <input 
@@ -219,51 +226,51 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
       
       <div className="flex-1">
         {/* 1. Personal Info */}
-        <SectionHeader id="personal" icon={User} title="Personal Information" subtitle="Contact & Profile" />
+        <SectionHeader id="personal" icon={User} title="Personal Details" subtitle="Contact info & Summary" />
         {activeSection === 'personal' && (
-          <div className="p-6 grid grid-cols-1 gap-5 bg-white animate-fadeIn">
+          <div className="p-6 grid grid-cols-1 gap-5 bg-white animate-slideDown">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">Full Name</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Full Name</label>
                 <input type="text" className="input-field" value={data.fullName} onChange={(e) => updateField('fullName', e.target.value)} />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">Target Job Title</label>
-                <input type="text" className="input-field" value={data.experience[0]?.position || ''} disabled title="Set in experience section" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Target Title</label>
+                <input type="text" className="input-field bg-gray-50" value={data.experience[0]?.position || ''} disabled title="Set in experience section" />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">Email</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</label>
                 <input type="email" className="input-field" value={data.email} onChange={(e) => updateField('email', e.target.value)} />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500">Phone</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
                 <input type="tel" className="input-field" value={data.phone} onChange={(e) => updateField('phone', e.target.value)} />
               </div>
-              <div className="col-span-2 space-y-1">
-                <label className="text-xs font-medium text-gray-500">Location</label>
+              <div className="col-span-2 space-y-1.5">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Location</label>
                 <input type="text" className="input-field" value={data.location} onChange={(e) => updateField('location', e.target.value)} />
               </div>
-              <div className="col-span-2 space-y-1">
-                 <label className="text-xs font-medium text-gray-500">LinkedIn / Portfolio</label>
+              <div className="col-span-2 space-y-1.5">
+                 <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">LinkedIn / Portfolio</label>
                  <input type="text" className="input-field" value={data.linkedin} onChange={(e) => updateField('linkedin', e.target.value)} />
               </div>
             </div>
 
-            <div className="pt-2 border-t border-gray-100 mt-2">
+            <div className="pt-4 border-t border-gray-100 mt-2">
               <div className="flex justify-between items-center mb-3">
-                <label className="text-sm font-semibold text-gray-700">Professional Summary</label>
+                <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Professional Summary</label>
                 <button 
                   onClick={handleGenerateSummary}
                   disabled={genState.isGenerating}
-                  className="px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-semibold hover:bg-indigo-100 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-3 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold hover:bg-indigo-100 transition-colors flex items-center gap-1.5 disabled:opacity-50 ring-1 ring-indigo-200"
                 >
                   {genState.isGenerating && genState.type === 'summary' ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
                   Auto-Write
                 </button>
               </div>
               <textarea 
-                className="input-field min-h-[120px] resize-y" 
-                placeholder="Brief summary of your career highlights..."
+                className="input-field min-h-[140px] resize-y leading-relaxed" 
+                placeholder="Write a brief summary of your career highlights..."
                 value={data.summary}
                 onChange={(e) => updateField('summary', e.target.value)}
               />
@@ -274,37 +281,37 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
         {/* 2. Experience */}
         <SectionHeader id="experience" icon={Briefcase} title="Experience" subtitle="Work History" />
         {activeSection === 'experience' && (
-          <div className="p-6 bg-gray-50/50 space-y-6 animate-fadeIn">
+          <div className="p-6 bg-gray-50 space-y-6 animate-slideDown">
             {data.experience.map((exp, index) => (
-              <div key={exp.id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 relative group transition-all hover:shadow-md">
+              <div key={exp.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 relative group transition-all hover:shadow-lg hover:border-indigo-200 border-l-4 border-l-indigo-500">
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <button onClick={() => removeExperience(exp.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                   <button onClick={() => removeExperience(exp.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>
                 
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Position {index + 1}</h4>
+                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Role {index + 1}</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="space-y-1">
-                     <label className="text-xs font-medium text-gray-500">Job Title</label>
+                  <div className="space-y-1.5">
+                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Job Title</label>
                      <input type="text" className="input-field" value={exp.position} onChange={(e) => updateExperience(exp.id, 'position', e.target.value)} />
                   </div>
-                  <div className="space-y-1">
-                     <label className="text-xs font-medium text-gray-500">Company</label>
+                  <div className="space-y-1.5">
+                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Company</label>
                      <input type="text" className="input-field" value={exp.company} onChange={(e) => updateExperience(exp.id, 'company', e.target.value)} />
                   </div>
-                  <div className="space-y-1">
-                     <label className="text-xs font-medium text-gray-500">Start Date</label>
+                  <div className="space-y-1.5">
+                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Start Date</label>
                      <input type="text" placeholder="e.g. 2020 or Mar 2020" className="input-field" value={exp.startDate} onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)} />
                   </div>
-                  <div className="space-y-1">
-                     <label className="text-xs font-medium text-gray-500">End Date</label>
+                  <div className="space-y-1.5">
+                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">End Date</label>
                      <div className="flex gap-3">
                         <input type="text" placeholder="e.g. 2022" className="input-field" value={exp.endDate} disabled={exp.current} onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)} />
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500 border-gray-300" checked={exp.current} onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)} />
-                          <span className="text-xs font-medium text-gray-600">Present</span>
+                        <label className="flex items-center gap-2 cursor-pointer shrink-0">
+                          <input type="checkbox" className="w-5 h-5 text-indigo-600 rounded-md focus:ring-indigo-500 border-gray-300" checked={exp.current} onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)} />
+                          <span className="text-xs font-semibold text-gray-600">Present</span>
                         </label>
                      </div>
                   </div>
@@ -312,26 +319,26 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
                 
                 <div className="space-y-2">
                    <div className="flex justify-between items-end">
-                      <label className="text-xs font-medium text-gray-500">Responsibilities & Achievements</label>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Description</label>
                       <button 
                         onClick={() => handleEnhanceDescription(exp.id, exp.description, exp.position)}
                         disabled={genState.isGenerating}
-                        className="text-xs flex items-center gap-1 text-indigo-600 font-medium hover:text-indigo-700 disabled:opacity-50"
+                        className="text-xs flex items-center gap-1.5 text-indigo-600 font-bold hover:text-indigo-800 disabled:opacity-50 px-2 py-1 hover:bg-indigo-50 rounded-lg transition-colors"
                       >
                         {genState.isGenerating && genState.targetId === exp.id ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-                        Enhance with AI
+                        Enhance Text
                       </button>
                    </div>
                    <textarea 
-                    className="input-field min-h-[140px] text-sm leading-relaxed"
-                    placeholder="• Led a team of..."
+                    className="input-field min-h-[160px] text-sm leading-relaxed"
+                    placeholder="• Led a team of...&#10;• Improved performance by..."
                     value={exp.description} 
                     onChange={(e) => updateExperience(exp.id, 'description', e.target.value)} 
                   />
                 </div>
               </div>
             ))}
-            <button onClick={addExperience} className="w-full py-3 border-2 border-dashed border-gray-200 text-gray-500 rounded-xl hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-medium text-sm">
+            <button onClick={addExperience} className="w-full py-4 border-2 border-dashed border-gray-200 text-gray-500 rounded-2xl hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-bold text-sm">
               <Plus size={18} /> Add Position
             </button>
           </div>
@@ -340,9 +347,9 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
         {/* 3. Skills */}
         <SectionHeader id="skills" icon={Code} title="Skills" subtitle="Technologies & Languages" />
         {activeSection === 'skills' && (
-          <div className="p-6 bg-white animate-fadeIn">
+          <div className="p-6 bg-white animate-slideDown">
             <div className="mb-4">
-              <label className="text-sm font-medium text-gray-700 block mb-2">Skills List</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">Skills List</label>
               <input 
                 type="text" 
                 placeholder="Type skills separated by commas..." 
@@ -350,13 +357,13 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
                 value={data.skills.join(', ')} 
                 onChange={handleSkillsChange} 
               />
-              <p className="text-xs text-gray-400 mt-2">e.g. React, Node.js, Project Management, Figma</p>
+              <p className="text-xs text-gray-400 mt-2 font-medium">e.g. React, Node.js, Project Management, Figma</p>
             </div>
             
             {data.skills.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+              <div className="flex flex-wrap gap-2 mt-4 p-4 bg-slate-50 rounded-xl border border-slate-100">
                 {data.skills.filter(s => s).map((skill, i) => (
-                  <span key={i} className="bg-white text-gray-700 px-3 py-1.5 rounded-md text-sm border border-gray-200 shadow-sm flex items-center gap-2">
+                  <span key={i} className="bg-white text-slate-700 px-3 py-1.5 rounded-lg text-sm border border-slate-200 shadow-sm flex items-center gap-2 font-medium">
                     {skill}
                   </span>
                 ))}
@@ -368,45 +375,45 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
         {/* 4. Education */}
         <SectionHeader id="education" icon={GraduationCap} title="Education" subtitle="Degrees & Certifications" />
         {activeSection === 'education' && (
-          <div className="p-6 bg-gray-50/50 space-y-4 animate-fadeIn">
+          <div className="p-6 bg-gray-50 space-y-6 animate-slideDown">
              {data.education.map((edu, index) => (
-              <div key={edu.id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 relative group">
+              <div key={edu.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 relative group border-l-4 border-l-indigo-500">
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <button onClick={() => removeEducation(edu.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                   <button onClick={() => removeEducation(edu.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>
-                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Education {index + 1}</h4>
+                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Education {index + 1}</h4>
 
                 <div className="space-y-4">
-                   <div className="space-y-1">
-                     <label className="text-xs font-medium text-gray-500">School / University</label>
+                   <div className="space-y-1.5">
+                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">School / University</label>
                      <input type="text" className="input-field" value={edu.school} onChange={(e) => updateEducation(edu.id, 'school', e.target.value)} />
                    </div>
                    <div className="grid grid-cols-2 gap-4">
-                     <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-500">Degree</label>
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Degree</label>
                         <input type="text" className="input-field" value={edu.degree} onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)} />
                      </div>
-                     <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-500">Field of Study</label>
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Field of Study</label>
                         <input type="text" className="input-field" value={edu.field} onChange={(e) => updateEducation(edu.id, 'field', e.target.value)} />
                      </div>
                    </div>
                    <div className="grid grid-cols-2 gap-4">
-                     <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-500">Start Year</label>
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Start Year</label>
                         <input type="text" className="input-field" value={edu.startDate} onChange={(e) => updateEducation(edu.id, 'startDate', e.target.value)} />
                      </div>
-                     <div className="space-y-1">
-                        <label className="text-xs font-medium text-gray-500">End Year</label>
+                     <div className="space-y-1.5">
+                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">End Year</label>
                         <input type="text" className="input-field" value={edu.endDate} onChange={(e) => updateEducation(edu.id, 'endDate', e.target.value)} />
                      </div>
                    </div>
                 </div>
               </div>
              ))}
-             <button onClick={addEducation} className="w-full py-3 border-2 border-dashed border-gray-200 text-gray-500 rounded-xl hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-medium text-sm">
+             <button onClick={addEducation} className="w-full py-4 border-2 border-dashed border-gray-200 text-gray-500 rounded-2xl hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-bold text-sm">
               <Plus size={18} /> Add Education
             </button>
           </div>
@@ -415,34 +422,34 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
         {/* 5. Projects */}
         <SectionHeader id="projects" icon={FolderGit2} title="Projects" subtitle="Side Projects & Open Source" />
         {activeSection === 'projects' && (
-          <div className="p-6 bg-gray-50/50 space-y-4 animate-fadeIn">
+          <div className="p-6 bg-gray-50 space-y-6 animate-slideDown">
              {data.projects.map((proj, index) => (
-               <div key={proj.id} className="bg-white rounded-xl p-5 shadow-sm border border-gray-200 relative group">
+               <div key={proj.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 relative group border-l-4 border-l-purple-500">
                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <button onClick={() => removeProject(proj.id)} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                   <button onClick={() => removeProject(proj.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                     <Trash2 size={16} />
                   </button>
                 </div>
-                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Project {index + 1}</h4>
+                 <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Project {index + 1}</h4>
                  <div className="space-y-4">
                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                         <label className="text-xs font-medium text-gray-500">Project Name</label>
+                      <div className="space-y-1.5">
+                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Project Name</label>
                          <input type="text" className="input-field" value={proj.name} onChange={(e) => updateProject(proj.id, 'name', e.target.value)} />
                       </div>
-                      <div className="space-y-1">
-                         <label className="text-xs font-medium text-gray-500">Link URL</label>
+                      <div className="space-y-1.5">
+                         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Link URL</label>
                          <input type="text" className="input-field" value={proj.link || ''} onChange={(e) => updateProject(proj.id, 'link', e.target.value)} />
                       </div>
                    </div>
-                   <div className="space-y-1">
-                      <label className="text-xs font-medium text-gray-500">Description</label>
+                   <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Description</label>
                       <textarea className="input-field min-h-[100px]" value={proj.description} onChange={(e) => updateProject(proj.id, 'description', e.target.value)} />
                    </div>
                  </div>
                </div>
              ))}
-             <button onClick={addProject} className="w-full py-3 border-2 border-dashed border-gray-200 text-gray-500 rounded-xl hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-medium text-sm">
+             <button onClick={addProject} className="w-full py-4 border-2 border-dashed border-gray-200 text-gray-500 rounded-2xl hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all flex items-center justify-center gap-2 font-bold text-sm">
               <Plus size={18} /> Add Project
             </button>
           </div>
@@ -450,18 +457,18 @@ const Editor: React.FC<EditorProps> = ({ data, onChange, onAnalyze, genState, se
       </div>
 
       {/* Analysis Button - Fixed at bottom */}
-      <div className="p-4 border-t border-gray-200 bg-white z-10 sticky bottom-0">
+      <div className="p-4 border-t border-gray-200 bg-white z-10 sticky bottom-0 backdrop-blur-xl bg-white/90">
         <button 
           onClick={onAnalyze}
           disabled={genState.isGenerating}
-          className="w-full bg-gradient-to-r from-slate-900 to-slate-800 text-white py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:from-slate-800 hover:to-slate-700 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group"
+          className="w-full bg-slate-900 text-white py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group active:scale-[0.99]"
         >
           {genState.isGenerating && genState.type === 'review' ? (
-             <Loader2 size={18} className="animate-spin" />
+             <Loader2 size={18} className="animate-spin text-indigo-400" />
           ) : (
-             <Sparkles size={18} className="text-yellow-300 group-hover:scale-110 transition-transform" />
+             <Sparkles size={18} className="text-indigo-400 group-hover:text-indigo-300 transition-colors" />
           )}
-          <span className="font-semibold tracking-wide">Review ATS Compatibility</span>
+          <span className="font-bold tracking-wide">Review ATS Compatibility</span>
         </button>
       </div>
 
