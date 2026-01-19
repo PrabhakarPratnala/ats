@@ -1,0 +1,5 @@
+{
+  "name": "ATS Resume Architect",
+  "description": "An AI-powered resume builder designed to create ATS-friendly resumes. Features intelligent content generation, multiple professional templates, and real-time preview.",
+  "requestFramePermissions": []
+}
