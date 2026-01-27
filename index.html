@@ -4,94 +4,193 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ATS Resume Architect</title>
-    <!-- Keeping Tailwind CDN for simplicity as requested, though a build step is preferred in prod -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <link rel="stylesheet" type='text/css' href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Merriweather:wght@300;400;700&family=Roboto+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap');
       
       :root {
-        --primary: #4f46e5;
-        --primary-light: #818cf8;
+        --primary: #6366f1;
+        --bg-dark: #0f172a;
+        --bg-panel: #1e293b;
       }
 
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #f8fafc;
-        color: #0f172a;
+        background-color: #020617;
+        color: #f8fafc;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow: hidden;
       }
       
-      /* Modern Input Field Styling */
+      ::selection {
+        background-color: rgba(99, 102, 241, 0.3);
+        color: #e0e7ff;
+      }
+      
+      /* --- Form Elements --- */
+      .input-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #94a3b8;
+        margin-bottom: 0.35rem;
+        display: block;
+        transition: color 0.2s;
+      }
+
+      .group:hover .input-label {
+        color: #cbd5e1;
+      }
+
       .input-field {
         width: 100%;
-        padding: 0.75rem 1rem;
-        background-color: #f8fafc; /* Slightly gray background by default */
-        border: 1px solid #e2e8f0;
-        border-radius: 0.75rem;
-        font-size: 0.875rem;
-        line-height: 1.25rem;
-        color: #1e293b;
+        padding: 0.6rem 0.8rem;
+        background-color: #1a2333; 
+        border: 1px solid #2d384d;
+        border-radius: 0.5rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        color: #f1f5f9;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         outline: none;
-        font-weight: 500;
+        font-weight: 400;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2) inset;
       }
       
       .input-field::placeholder {
-        color: #94a3b8;
+        color: #475569;
         font-weight: 400;
+        opacity: 0.6;
       }
       
       .input-field:hover {
-        background-color: #ffffff;
-        border-color: #cbd5e1;
+        border-color: #475569;
+        background-color: #1e293b;
       }
       
       .input-field:focus {
-        background-color: #ffffff;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); /* Softer, wider glow */
+        border-color: #6366f1;
+        background-color: #1e293b;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); 
+      }
+
+      /* --- Buttons --- */
+      .btn-dashed {
+        width: 100%;
+        padding: 0.7rem;
+        border: 1.5px dashed #334155;
+        color: #64748b;
+        border-radius: 0.6rem;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.8rem;
+        background-color: rgba(30, 41, 59, 0.2);
+      }
+      .btn-dashed:hover {
+        border-color: #6366f1;
+        color: #818cf8;
+        background-color: rgba(99, 102, 241, 0.08);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        color: white;
+        padding: 0.65rem 1.1rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2), 0 2px 4px -1px rgba(79, 70, 229, 0.1);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        filter: brightness(110%);
+      }
+      .btn-primary:active {
+        transform: translateY(0px);
       }
       
-      .input-field:disabled {
-        background-color: #f1f5f9;
-        cursor: not-allowed;
-        color: #94a3b8;
+      .btn-secondary {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        color: #e2e8f0;
+        padding: 0.65rem 1.1rem;
+        border-radius: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-secondary:hover {
+        border-color: #64748b;
+        background-color: #263348;
+      }
+
+      .ai-menu-btn {
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #cbd5e1;
+        border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        transition: all 0.15s;
+      }
+      .ai-menu-btn:hover {
+        background-color: #312e81; /* Indigo 900 */
+        color: #a5b4fc;
       }
 
       /* Custom Scrollbar */
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 3px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
+      .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+      .bg-grid-pattern {
+        background-color: transparent;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 32px 32px;
       }
 
-      /* Background Pattern */
-      .bg-grid-pattern {
-        background-color: #f8fafc;
-        background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
-        background-size: 24px 24px;
+      /* Animations */
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+      @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
       }
+      
+      .animate-fadeIn { animation: fadeIn 0.2s ease-out forwards; }
+      .animate-scaleIn { animation: scaleIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-slideDown { animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-shimmer { animation: shimmer 2s infinite linear; }
 
       @media print {
-        @page {
-          margin: 0;
-          size: auto;
-        }
-        body {
-          background: white;
-        }
-        .no-print {
-          display: none !important;
-        }
+        @page { margin: 0; size: auto; }
+        body { background: white; color: black; }
+        .bg-grid-pattern { display: none; }
+        .no-print { display: none !important; }
       }
     </style>
   <script type="importmap">
